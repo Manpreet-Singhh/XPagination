@@ -4,28 +4,33 @@ import styles from './EmployeeTable.module.css';
 const EmployeeTable = () => {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-//   const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const itemsPerPage = 10;
 
   const fetchEmployees = async () => {
-    try {
-      const response = await fetch('https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json');
-    //   if (!response.ok) {
-    //     throw new Error('Failed to fetch data');
-    //   }
-      const data = await response.json();
-      setEmployees(data);
-    //   setLoading(false);
-    } catch (error) {
-      setError('Failed to fetch data');
-      console.error("Error fetching data", error);
-    //   setLoading(false);
+    const response = await fetch('https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json');
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
     }
+    const data = await response.json();
+    return data;
   };
 
   useEffect(() => {
-    fetchEmployees();
+    const fetchData = async () => {
+      try {
+        const data = await fetchEmployees();
+        setEmployees(data);
+        setLoading(false);
+      } catch (error) {
+        setError('Failed to fetch data');
+        setLoading(false);
+        alert('Failed to fetch data'); 
+      }
+    };
+
+    fetchData();
   }, []);
 
   const totalPages = Math.ceil(employees.length / itemsPerPage);
@@ -55,9 +60,9 @@ const EmployeeTable = () => {
     ));
   };
 
-//   if (loading) {
-//     return <div className={styles['table-container']}>Loading...</div>;
-//   }
+  if (loading) {
+    return <div className={styles['table-container']}>Loading...</div>;
+  }
 
   if (error) {
     return <div className={styles['table-container']}>{error}</div>;
