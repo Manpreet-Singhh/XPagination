@@ -19,7 +19,7 @@ const EmployeeTable = () => {
     //   setLoading(false);
     } catch (error) {
       setError('Failed to fetch data');
-      alert("Error fetching data");
+      console.error("Error fetching data", error);
     //   setLoading(false);
     }
   };
